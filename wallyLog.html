@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset="UTF-8">
+<title>The Wally Log</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="wallyLog.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="wallyLog.js"></script>
+
+<body>
+  <div id = "blackBg"></div>
+  <div id = "banner">
+    <h1>The Wally Log</h1>
+    <h2>An inventory of Harvey Mudd College's machines.</h2>
+  </div>
+  <input type="text" id="searchBar" name="search"
+	 oninput="searchBar(this.value);" placeholder=
+	 "search by barcode or machine #">
+  <div id = "filter" style = "width:20px;height:20px;background-color:green;display:inline-block;"></div>
+  <div id = "inventory">
+    <!-- read google sheets and insert via DOM  -->
+    <table id = "inventoryTable">
+    </table>
+  </div>
+  
+</body>
+</html>

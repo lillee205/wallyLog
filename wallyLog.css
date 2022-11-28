@@ -1,0 +1,89 @@
+:root {
+    --hmcYellow: #DEA000;
+    --warmGray: #5F5751;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+#banner{
+    background-color: var(--hmcYellow);
+    text-align: center;
+    min-height: 170px;
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#searchBar{
+    background-color: green;
+    width: 50%;
+    min-height: 40px;
+    height: 7vh;
+    border-radius: 5px;
+}
+
+#inventory{
+    background-color: pink;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    height: 60vh;
+    overflow-y: scroll;
+}
+
+
+table, th, td {
+    border: none
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    padding: 1em;
+    width: 85%;
+    overflow-y: scroll;
+    border-collapse: collapse;
+}
+
+th, td{
+    padding: 0.5em;
+    background-color: var(--hmcYellow);
+    border: 2px solid transparent;
+}
+tr{
+    border-bottom:5px solid pink;
+}
+th {
+    position: sticky;
+    top: 0;
+    border-bottom:5px solid pink;
+}
+
+/* 
+
+/* enable rounded corners of table */ 
+tbody tr:last-child td:first-child {
+    border: 2px solid transparent;
+    border-bottom-left-radius: 10px;
+}
+    
+tbody tr:last-child td:last-child {
+    border: 2px solid transparent;
+    border-bottom-right-radius: 10px;
+}
+
+thead tr:first-child th:first-child{
+    border: 2px solid transparent;
+    border-top-left-radius: 10px;
+}
+
+thead tr:first-child th:last-child {
+    border: 2px solid transparent;
+    border-top-right-radius: 10px;
+}

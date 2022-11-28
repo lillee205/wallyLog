@@ -1,0 +1,8 @@
+purpose: interface that's easier to work with, dedicated for finding things
++ find everything that's broken, in certain location, etc
+  + filters
++ after someone updates the google sheet, the site will check to see everything
+  is unique
+  + if it's not unique, then it tells you which thing is wrong and you'd have to
+    go into the google sheets to fix that
+  + 
