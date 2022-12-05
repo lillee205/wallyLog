@@ -6,8 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="wallyLog.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="wallyLog.js"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.6.14/sweetalert2.css"
+      />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.6.14/sweetalert2.all.min.js"></script>
+
+<script defer src="wallyLog.js"></script>
 
 <body>
   <div id = "blackBg"></div>
@@ -16,7 +20,7 @@
     <h2>An inventory of Harvey Mudd College's machines.</h2>
   </div>
   <input type="text" id="searchBar" name="search"
-	 oninput="searchBar(this.value);" placeholder=
+	 oninput="search(this.value);" placeholder=
 	 "search by barcode or machine #">
   <div id = "filter" style = "width:20px;height:20px;background-color:green;display:inline-block;"></div>
   <div id = "inventory">

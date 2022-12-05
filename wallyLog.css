@@ -36,7 +36,13 @@ body {
     overflow-y: scroll;
 }
 
-
+#equipment, #location {
+    column-count: 2;
+    text-align: left;
+}
+#status{
+    text-align: left;
+}
 table, th, td {
     border: none
 }
@@ -49,6 +55,7 @@ table {
     width: 85%;
     overflow-y: scroll;
     border-collapse: collapse;
+    empty-cells: show;
 }
 
 th, td{
