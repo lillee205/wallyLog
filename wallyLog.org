@@ -5,4 +5,7 @@ purpose: interface that's easier to work with, dedicated for finding things
   is unique
   + if it's not unique, then it tells you which thing is wrong and you'd have to
     go into the google sheets to fix that
-  + 
+
+
++ how should filtration work?
+  + for each 

@@ -9,14 +9,27 @@ let equipmentTypes = new Set()
 let locations = new Set()
 // keeps track of what filters are applied
 let appliedFilters = {}
+
 // indexToColName[i] will give the ith column's name. (0-indexed)
 let indexToColName = {}
 
+// main body code, initialization
 $(function(){
-    search("")
     fillInTable()
     filterBtn = $("#filter")
+    // opens filter menu when you click button
     filterBtn.click(toggleFilters)
+    
+    // initialize appliedFilters; set every filter to false 
+    appliedFilters = {"Status": {Good: false, Error: false}}
+    appliedFilters["Location"] = {}
+    for (const loc of locations) {
+	appliedFilters["Location"][loc] = false
+    }
+    appliedFilters["Equipment Type"] = {}
+    for (const equip of equipmentTypes) {
+	appliedFilters["Equipment Type"][equip] = false
+    }
 })
 
 function fillInTable() {
@@ -36,6 +49,7 @@ function fillInTable() {
 	    cell.outerHTML = "<th>" + cleanData[0][i] + "</th>"
 	    indexToColName[i] = cleanData[0][i]
 	}
+	
 	// loop through all rows and add info to table
 	tbody = table.createTBody()
 	for (let i = 1; i < cleanData.length - 1; i++) {
@@ -51,7 +65,8 @@ function fillInTable() {
 		cell.innerHTML = val
 
 		// keep track of unique equipment types & locations
-		val = val.replaceAll(/\s+/g, '_');
+		val = val.replaceAll(/\s+/g, '_') // replace whitespace with underscores
+		                                  // so that val can be used as a variable name later
 		if (indexToColName[j] == "Equipment Type") {
 		    equipmentTypes.add(val)
 		}
@@ -65,7 +80,6 @@ function fillInTable() {
 
 function search(val, filters = appliedFilters) {
     // given value in search bar and filters, filter csv table rows
-    
     if (val == "") { // if empty and no filters, show everything
 	if (noFiltersApplied()) {
 	    console.log("no filters applied")
@@ -75,46 +89,19 @@ function search(val, filters = appliedFilters) {
 	} else {
 	    console.log("filtering...")
 	    $("tbody").children().each(function() {
-		console.log(indexToColName)
 		rowChildren = this.children
+		let show = true
 		// we only look at columns equipType, location, and status
 		for (let i = 2; i < rowChildren.length - 1; i++) {
-		    
 		    cellVal = rowChildren[i].innerHTML.replaceAll(" ", "_")
-		    if (indexToColName[i] == "Equipment Type") {
-			equipType = appliedFilters["Equipment Type"]
-			for (const filter in equipType) {
-			    // if filter is turned on and cell does not match filter
-			    if (equipType[filter] == true && cellVal == filter) {
-				// hide row
-				this.style.display = "none"
-				continue
-			    }
-			}
+		    if (!(showRow(indexToColName[i], cellVal))) {
+			this.style.display = "none"
+			show = false
+			break;
 		    }
-		    else if (indexToColName[i] == "Location") {
-			locs = appliedFilters["Location"]
-			for (const filter in locs) {
-			    // if filter is turned on and cell does not match filter
-
-			    if (locs[filter] == true  && cellVal != filter) {
-				// hide row
-				this.style.display = "none"
-				continue
-			    }
-			}
-		    }
-		    else if (indexToColName[i] == "Status") {
-			status = appliedFilters["Status"]
-			for (const filter in status) {
-			    // if filter is turned on and cell does not match filter
-			    if (equipType[status] == true && cellVal != filter) {
-				// hide row
-				this.style.display = "none"
-				continue
-			    }
-			}
-		    }
+		}
+		if (show) {
+		    this.style.display = "table-row"
 		}
 	    })
 	}
@@ -141,22 +128,25 @@ function search(val, filters = appliedFilters) {
 
 function toggleFilters() {
     // if currently hidden, toggle filters as viewable
+    let goodChecked = appliedFilters["Status"]["Good"]
+    let errorChecked = appliedFilters["Status"]["Error"]
+    console.log(appliedFilters)
     Swal.fire({
 	title: 'Filters',
 	html:
 	`<h4>Equipment Type</h4>
 	 <div id = "equipment">
-           ${getInputHtml(equipmentTypes)}
+           ${getInputHtml("Equipment Type", equipmentTypes)}
          </div>
          <h4>Location</h4>
          <div id = "location">
-           ${getInputHtml(locations)}
+           ${getInputHtml("Location", locations)}
          </div>
          <h4>Status</h4>
          <div id = "status">
-           <span style="white-space: nowrap;"><input type = "checkbox" id = "good" name = "good">
+           <span style="white-space: nowrap;"><input type = "checkbox" id = "good" name = "good" ${goodChecked ? 'checked' : ''}>
            <label for = "good">Good</label></span><br>
-           <span style="white-space: nowrap;"><input type = "checkbox" id = "error" name = "error">
+           <span style="white-space: nowrap;"><input type = "checkbox" id = "error" name = "error" ${errorChecked ? 'checked' : ''}>
            <label for = "error">Error</label></span><br>
          </div>
 
@@ -204,6 +194,7 @@ function toggleFilters() {
 	if (result.isConfirmed) {
 	    appliedFilters = result.value
 	    console.log("Searching in progress")
+	    console.log("Updated filters: ")
 	    console.log(appliedFilters)
 	    search("")
 	    //$("#searchBar").value = ""
@@ -212,13 +203,15 @@ function toggleFilters() {
 }
 
 
-function getInputHtml(set) {
+function getInputHtml(setName, set) {
     htmlStr = ""
-    set.forEach( element => {
+    set.forEach(element => {
 	// replace underscores with white space
 	itemVal  = element.replaceAll('_', ' ')
+	let checked = appliedFilters[setName][element]
+	console.log(checked)
 	htmlStr += `
-        <span style="white-space: nowrap;"><input type = "checkbox" id = "${element}" name = "${element}">
+        <span style="white-space: nowrap;"><input type = "checkbox" id = "${element}" name = "${element}" ${checked ? 'checked' : ''}>
         <label for = "${element}">${itemVal}</label></span><br>
         `
     })
@@ -227,19 +220,30 @@ function getInputHtml(set) {
 
 
 function noFiltersApplied() {
-    length = Object.keys(appliedFilters).length
-    if (length == 0) {
-	return true
-    }
     // returns true if every element in appliedFilters is false
     for (const category in appliedFilters) {
-	for (const filter in appliedFilters[category]) {
-	    // if filter is true
-	    if (appliedFilters[category][filter]) {
-		return false
-	    }
+	// if every value in appliedFilters[category] is not false, return false
+	if (Object.values(appliedFilters[category]).every(value => !value)) {
+	    return false
 	}
     }
     return true
 
+}
+
+function showRow(colName, cellVal) {
+    // returns true if we show this category
+    // returns false if we do not
+    elems = appliedFilters[colName]
+    // if every filter in this category is false, then we don't need to consider this category
+    if (Object.values(elems).every(value => !value)) {
+	return true
+    }
+    // if there exists a filter that is true and the value of the cell also matches that filter, return true
+    for (const filter in elems) {
+	if (elems[filter]  && cellVal == filter) {
+	    return true
+	}
+    }
+    return false
 }
