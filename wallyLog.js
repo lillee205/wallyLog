@@ -39,21 +39,40 @@ function fillInTable() {
 	json: true,
     }, (data) => {
 	let cleanData = data.values // contents of google sheet
-
+	
 	// create header of table
 	let table = document.getElementById("inventoryTable")
 	let headers = cleanData[0]
 	let row = table.createTHead().insertRow(-1)
 	for (let i = 0; i < headers.length; i++){
-	    cell = row.insertCell(-1)
-	    cell.outerHTML = "<th>" + cleanData[0][i] + "</th>"
+	    let cell = row.insertCell(-1)
+	    cell.outerHTML = `<th style>${cleanData[0][i]}</th>`
 	    indexToColName[i] = cleanData[0][i]
 	}
-	
+	// update filler row that goes behind header row
+	console.log(row.offsetHeight)
+	console.log("new row")
+	document.getElementById("filler").style.height = row.offsetHeight + "px"
+
+	// rows will have a color gradation 
+	let color1 = new Color("#DACDBA")
+	let color2= new Color("srgb", [0.6, 0.6, 0.6])
+	//let color2= new Color("red")
+
+	let step = 1 / (cleanData.length - 1)
+	let gradient = color1.steps(color2, {
+	    space: "lch",
+	    outputSpace: "srgb",
+	    steps: cleanData.length - 1,
+	    maxSteps: cleanData.length - 1 // min number of steps
+	})
+	console.log(gradient)
 	// loop through all rows and add info to table
 	tbody = table.createTBody()
 	for (let i = 1; i < cleanData.length - 1; i++) {
+	    let color = gradient[i-1]
 	    let row = tbody.insertRow(-1)
+	    row.style.backgroundColor = color
 	    for (let j = 0; j < 6; j++) {
 		let cell = row.insertCell(-1)
 		val = cleanData[i][j]
@@ -123,6 +142,7 @@ function search(val, filters = appliedFilters) {
 	    }
 	});
     }
+    // if no elements are shown that match filters, show that there are 
 
 }
 
@@ -156,9 +176,8 @@ function toggleFilters() {
 	focusConfirm: false,
 	showConfirmButton: true,
 	showClass: {
-	    backdrop: 'swal2-noanimation', // disable backdrop animation
-	    popup: '',                     // disable popup animation
-	    icon: ''                       // disable icon animation
+	    popup: 'animated fadeInDown faster',
+	    icon: 'animated heartBeat delay-1s'
 	},
 	focusConfirm: false,
 	// handle what data we will send when promise is resolved
